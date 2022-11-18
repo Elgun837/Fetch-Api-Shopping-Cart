@@ -68,6 +68,8 @@ class UI {
                     this.saveCartValues(cart);
 
                     this.addCartItem(cartItem);
+                    this.showCart();
+
                 })
             }
         })
@@ -117,6 +119,17 @@ class UI {
         cartContent.appendChild(li);
 
     }
+    showCart(){
+        cartBtn.click();
+    }
+    setupApp(){
+        cart = Storage.getCart();
+        this.saveCartValues(cart);
+        this.populateCart(cart);
+    }
+    populateCart(cart){
+        cart.forEach(item => this.addCartItem(item))
+    }
 }
 
 class Storage {
@@ -131,12 +144,16 @@ class Storage {
     static saveCart(cart) {
         localStorage.setItem("cart", JSON.stringify(cart));
     }
+    static getCart(){
+        return localStorage.getItem("cart") ? JSON.parse(localStorage.getItem("cart")) : [];
+    }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
     const ui = new UI();
     const products = new Products();
-
+    ui.setupApp();
+    
     products.getProducts().then(products => {
         ui.displayProducts(products)
         Storage.saveProducts(products);
